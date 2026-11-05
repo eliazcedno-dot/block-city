@@ -1,0 +1,9 @@
+{
+  "name": "block-city-divine",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {"dev":"vite --host 0.0.0.0", "build":"tsc -b && vite build", "preview":"vite preview --host 0.0.0.0"},
+  "dependencies": {"@amodx/suite":"latest", "@babylonjs/core":"latest", "@divinevoxel/vlox":"latest", "@divinevoxel/vlox-babylon":"latest"},
+  "devDependencies": {"@types/node":"latest", "typescript":"latest", "vite":"latest"}
+}
