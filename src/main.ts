@@ -14,16 +14,16 @@ new HemisphericLight('sky',new Vector3(0,1,0),scene).intensity=.82;
 new DirectionalLight('sun',new Vector3(-.5,-1,.35),scene).intensity=.75;
 
 const textures:TextureData=[
- {id:'bc_grass',path:'/assets/textures/grass.png'},
- {id:'bc_dirt',path:'/assets/textures/dirt.png'},
- {id:'bc_stone',path:'/assets/textures/stone.png'}
+ {id:'bc_grass',path:`${import.meta.env.BASE_URL}assets/textures/grass.png`},
+ {id:'bc_dirt',path:`${import.meta.env.BASE_URL}assets/textures/dirt.png`},
+ {id:'bc_stone',path:`${import.meta.env.BASE_URL}assets/textures/stone.png`}
 ];
 const voxel=(id:string):VoxelData[number]=>({id,properties:{dve_substance:'dve_solid',dve_collider_id:'dve_cube',dve_check_collisions:true,dve_model_data:{id:'dve_simple_cube',modSchema:[],modRelationSchema:[],inputs:{'*':{texture:id}}}}});
 async function boot(){
- const worldWorker=new Worker(new URL('./Contexts/World/',import.meta.url),{type:'module'});
+ const worldWorker=new Worker(new URL('./Contexts/World/index.ts',import.meta.url),{type:'module'});
  const count=Math.max(1,Math.min(3,Math.ceil(((navigator.hardwareConcurrency||4)-2)/2)));
- const mesherWorkers=Array.from({length:count},()=>new Worker(new URL('./Contexts/Mesher/',import.meta.url),{type:'module'}));
- const generatorWorkers=Array.from({length:count},()=>new Worker(new URL('./Contexts/Generator/',import.meta.url),{type:'module'}));
+ const mesherWorkers=Array.from({length:count},()=>new Worker(new URL('./Contexts/Mesher/index.ts',import.meta.url),{type:'module'}));
+ const generatorWorkers=Array.from({length:count},()=>new Worker(new URL('./Contexts/Generator/index.ts',import.meta.url),{type:'module'}));
  const renderer=await InitDVErenderer({textureTypes:[],substances:[],scene,textureData:textures});
  const DVER=await StartRenderer({renderer,worldWorker,mesherWorkers,generatorWorkers,voxels:[voxel('bc_grass'),voxel('bc_dirt'),voxel('bc_stone')],memoryAndCPU:{useSharedMemory:false}});
  DVER.threads.world.runTask('start-world',[]);
