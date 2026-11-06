@@ -3,7 +3,20 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "scripts": {"dev":"vite --host 0.0.0.0", "build":"tsc -b && vite build", "preview":"vite preview --host 0.0.0.0"},
-  "dependencies": {"@amodx/suite":"latest", "@babylonjs/core":"latest", "@divinevoxel/vlox":"latest", "@divinevoxel/vlox-babylon":"latest"},
-  "devDependencies": {"@types/node":"latest", "typescript":"latest", "vite":"latest"}
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@amodx/suite": "^0.0.1",
+    "@babylonjs/core": "^9.15.0",
+    "@divinevoxel/vlox": "0.0.86",
+    "@divinevoxel/vlox-babylon": "0.0.65"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.3",
+    "vite": "latest"
+  }
 }
