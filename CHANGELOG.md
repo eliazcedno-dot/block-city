@@ -1,5 +1,14 @@
 # Change log
 
+## 2026-11-05 — Build repair
+
+- Fixed the texture registry type to match the current Vlox API (`TextureData[]`).
+- Fixed voxel helper typing to use the current `VoxelData` interface.
+- Added Vite client type declarations for CSS imports and `import.meta.env`.
+- Passed `null` for Babylon's nullable picking-ray world matrix instead of `undefined`.
+- Pinned Vlox and its Babylon renderer to upstream package versions 0.0.86 / 0.0.65 and aligned Babylon.js with the upstream 9.15 line.
+
+
 ## Core controls and vehicle pass
 
 - Added custom pointer-lock mouse look; the camera no longer depends on Babylon's default camera input stack.
