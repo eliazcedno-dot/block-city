@@ -1,5 +1,11 @@
 # BLOCK CITY — Divine Voxel Engine foundation
 
+## Live build status
+
+- **Play in browser:** https://eliazcedno-dot.github.io/block-city/
+- The GitHub Actions pipeline has successfully installed dependencies, passed `npm run build`, uploaded the Pages artifact, and reported a successful deployment.
+- The published page has not yet had a manual browser gameplay smoke test. Treat DVE worker/world startup and in-game controls as implemented in the prototype but not yet runtime-verified.
+
 A browser-game starter built around **Divine Voxel Engine (Vlox)** and its Babylon.js renderer.
 
 ## Run locally
