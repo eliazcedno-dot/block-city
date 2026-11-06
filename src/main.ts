@@ -13,12 +13,12 @@ camera.minZ=.08; camera.fov=1.05; camera.inertia=0; camera.inputs.clear(); scene
 new HemisphericLight('sky',new Vector3(0,1,0),scene).intensity=.82;
 new DirectionalLight('sun',new Vector3(-.5,-1,.35),scene).intensity=.75;
 
-const textures:TextureData=[
+const textures:TextureData[]=[
  {id:'bc_grass',path:`${import.meta.env.BASE_URL}assets/textures/grass.png`},
  {id:'bc_dirt',path:`${import.meta.env.BASE_URL}assets/textures/dirt.png`},
  {id:'bc_stone',path:`${import.meta.env.BASE_URL}assets/textures/stone.png`}
 ];
-const voxel=(id:string):VoxelData[number]=>({id,properties:{dve_substance:'dve_solid',dve_collider_id:'dve_cube',dve_check_collisions:true,dve_model_data:{id:'dve_simple_cube',modSchema:[],modRelationSchema:[],inputs:{'*':{texture:id}}}}});
+const voxel=(id:string):VoxelData=>({id,properties:{dve_substance:'dve_solid',dve_collider_id:'dve_cube',dve_check_collisions:true,dve_model_data:{id:'dve_simple_cube',modSchema:[],modRelationSchema:[],inputs:{'*':{texture:id}}}}});
 async function boot(){
  const worldWorker=new Worker(new URL('./Contexts/World/index.ts',import.meta.url),{type:'module'});
  const count=Math.max(1,Math.min(3,Math.ceil(((navigator.hardwareConcurrency||4)-2)/2)));
@@ -54,7 +54,7 @@ let done=false,inCar=false,yaw=0,pitch=0,vy=0,ground=true,speed=0;const keys=new
 const collides=(x:number,z:number,rx:number,rz:number)=>bounds.some(b=>x+rx>b.minX&&x-rx<b.maxX&&z+rz>b.minZ&&z-rz<b.maxZ);
 function move(p:Vector3,dx:number,dz:number,rx:number,rz:number){if(!collides(p.x+dx,p.z,rx,rz))p.x+=dx;if(!collides(p.x,p.z+dz,rx,rz))p.z+=dz}
 function mission(){if(!done){done=true;objective.textContent='MISSION COMPLETE — FIRST CONTACT';marker.dispose();notify('CONTACT: Reward $250 — take the red car for a drive.')}else notify('CONTACT: The garage is down the block.')}
-function interact(){if(inCar)return;const ray=scene.createPickingRay(canvas.width/2,canvas.height/2,undefined,camera);const hit=scene.pickWithRay(ray,(m:AbstractMesh)=>m.metadata?.kind==='contact');if(hit?.hit&&(hit.distance??Infinity)<=6)mission();else notify('Aim at the gold contact within 6 blocks and press E.')}
+function interact(){if(inCar)return;const ray=scene.createPickingRay(canvas.width/2,canvas.height/2,null,camera);const hit=scene.pickWithRay(ray,(m:AbstractMesh)=>m.metadata?.kind==='contact');if(hit?.hit&&(hit.distance??Infinity)<=6)mission();else notify('Aim at the gold contact within 6 blocks and press E.')}
 function toggleCar(){if(inCar){inCar=false;speed=0;camera.position.copyFrom(car.position.add(new Vector3(Math.cos(yaw),0,-Math.sin(yaw)).scale(2.4)));camera.position.y=62.65;yaw=car.rotation.y;camera.rotation.set(pitch,yaw,0);notify('Exited vehicle')}else if(Vector3.Distance(camera.position,car.position)<=4.5){inCar=true;speed=0;notify('Vehicle entered — WASD drive · F exit')}else notify('Move closer to the red car to enter it.')}
 canvas.addEventListener('click',()=>{if(!document.pointerLockElement)void canvas.requestPointerLock()});
 document.addEventListener('mousemove',e=>{if(!document.pointerLockElement||inCar)return;yaw+=e.movementX*.0022;pitch=Math.max(-1.48,Math.min(1.48,pitch-e.movementY*.0022));camera.rotation.set(pitch,yaw,0)});
