@@ -4,6 +4,8 @@
 - Switched the E-key interaction to Babylon's camera-forward ray, avoiding drawing-buffer-size assumptions when aiming from the center of the screen.
 - Prevented pointer clicks from completing the contact while seated in the vehicle.
 
+**Verification:** checked the worker startup pattern against the upstream Vlox Getting Started guide and confirmed the hitbox visibility/picking behavior against Babylon.js picking documentation. The container cannot resolve `github.com`, so no local dependency install/build or browser smoke test was possible. The previously successful Actions run predates this change; the new run still needs confirmation.
+
 # Change log
 
 ## 2026-11-05 — Build repair
