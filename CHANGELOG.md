@@ -1,3 +1,9 @@
+## 2026-11-12 — Reliable NPC picking
+
+- Changed the contact hitbox from `isVisible = false` (excluded by Babylon's normal scene picking) to `visibility = 0` with `isVisible = true` and `isPickable = true`, so it stays invisible while remaining clickable.
+- Switched the E-key interaction to Babylon's camera-forward ray, avoiding drawing-buffer-size assumptions when aiming from the center of the screen.
+- Prevented pointer clicks from completing the contact while seated in the vehicle.
+
 # Change log
 
 ## 2026-11-05 — Build repair
