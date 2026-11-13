@@ -41,7 +41,7 @@ building(15,10,10,10,12);building(-16,14,12,9,17);building(18,-18,9,12,9);buildi
 const road=MeshBuilder.CreateBox('road',{width:15,height:.08,depth:100},scene);road.position.set(0,61.04,0);road.material=mat('asphalt',new Color3(.12,.14,.16));road.isPickable=false;
 for(const x of [-8.3,8.3]){const w=MeshBuilder.CreateBox('sidewalk',{width:1.5,height:.16,depth:100},scene);w.position.set(x,61.08,0);w.material=mat('walk',new Color3(.48,.5,.48));w.isPickable=false}
 for(let z=-42;z<=42;z+=8){const s=MeshBuilder.CreateBox('lane-mark',{width:.22,height:.025,depth:3},scene);s.position.set(0,61.09,z);s.material=gold;s.isPickable=false}
-const npc=MeshBuilder.CreateBox('contact',{width:.8,height:1.8,depth:.65},scene);npc.position.set(4,61.9,-8);npc.isVisible=false;npc.metadata={kind:'contact'};
+const npc=MeshBuilder.CreateBox('contact',{width:.8,height:1.8,depth:.65},scene);npc.position.set(4,61.9,-8);npc.isVisible=true;npc.visibility=0;npc.isPickable=true;npc.metadata={kind:'contact'};
 const body=MeshBuilder.CreateBox('contact-shirt',{width:.72,height:1,depth:.5},scene);body.position.set(4,61.5,-8);body.material=shirt;body.metadata={kind:'contact'};
 const head=MeshBuilder.CreateBox('contact-head',{size:.52},scene);head.position.set(4,62.25,-8);head.material=skin;head.metadata={kind:'contact'};
 const marker=MeshBuilder.CreateCylinder('marker',{height:.12,diameter:1.2,tessellation:8},scene);marker.position.set(4,63.35,-8);marker.material=gold;marker.isPickable=false;
@@ -54,13 +54,13 @@ let done=false,inCar=false,yaw=0,pitch=0,vy=0,ground=true,speed=0;const keys=new
 const collides=(x:number,z:number,rx:number,rz:number)=>bounds.some(b=>x+rx>b.minX&&x-rx<b.maxX&&z+rz>b.minZ&&z-rz<b.maxZ);
 function move(p:Vector3,dx:number,dz:number,rx:number,rz:number){if(!collides(p.x+dx,p.z,rx,rz))p.x+=dx;if(!collides(p.x,p.z+dz,rx,rz))p.z+=dz}
 function mission(){if(!done){done=true;objective.textContent='MISSION COMPLETE — FIRST CONTACT';marker.dispose();notify('CONTACT: Reward $250 — take the red car for a drive.')}else notify('CONTACT: The garage is down the block.')}
-function interact(){if(inCar)return;const ray=scene.createPickingRay(canvas.width/2,canvas.height/2,null,camera);const hit=scene.pickWithRay(ray,(m:AbstractMesh)=>m.metadata?.kind==='contact');if(hit?.hit&&(hit.distance??Infinity)<=6)mission();else notify('Aim at the gold contact within 6 blocks and press E.')}
+function interact(){if(inCar)return;const hit=scene.pickWithRay(camera.getForwardRay(6),(m:AbstractMesh)=>m.metadata?.kind==='contact');if(hit?.hit)mission();else notify('Aim at the gold contact within 6 blocks and press E.')}
 function toggleCar(){if(inCar){inCar=false;speed=0;camera.position.copyFrom(car.position.add(new Vector3(Math.cos(yaw),0,-Math.sin(yaw)).scale(2.4)));camera.position.y=62.65;yaw=car.rotation.y;camera.rotation.set(pitch,yaw,0);notify('Exited vehicle')}else if(Vector3.Distance(camera.position,car.position)<=4.5){inCar=true;speed=0;notify('Vehicle entered — WASD drive · F exit')}else notify('Move closer to the red car to enter it.')}
 canvas.addEventListener('click',()=>{if(!document.pointerLockElement)void canvas.requestPointerLock()});
 document.addEventListener('mousemove',e=>{if(!document.pointerLockElement||inCar)return;yaw+=e.movementX*.0022;pitch=Math.max(-1.48,Math.min(1.48,pitch-e.movementY*.0022));camera.rotation.set(pitch,yaw,0)});
 window.addEventListener('keydown',e=>{keys.add(e.code);if(['KeyW','KeyA','KeyS','KeyD','Space'].includes(e.code))e.preventDefault();if(e.code==='KeyE'&&!e.repeat)interact();if(e.code==='KeyF'&&!e.repeat)toggleCar()});
 window.addEventListener('keyup',e=>keys.delete(e.code));window.addEventListener('blur',()=>keys.clear());
-scene.onPointerObservable.add((i:any)=>{const m=i.pickInfo?.pickedMesh as AbstractMesh|null;if(i.type===PointerEventTypes.POINTERDOWN&&i.pickInfo?.hit&&m?.metadata?.kind==='contact'&&(i.pickInfo.distance??99)<=6)mission()});
+scene.onPointerObservable.add((i:any)=>{const m=i.pickInfo?.pickedMesh as AbstractMesh|null;if(!inCar&&i.type===PointerEventTypes.POINTERDOWN&&i.pickInfo?.hit&&m?.metadata?.kind==='contact'&&(i.pickInfo.distance??99)<=6)mission()});
 scene.onBeforeRenderObservable.add(()=>{const dt=Math.min(engine.getDeltaTime()/1000,.05),f=Number(keys.has('KeyW'))-Number(keys.has('KeyS')),s=Number(keys.has('KeyD'))-Number(keys.has('KeyA'));
  if(inCar){const throttle=f,steer=Number(keys.has('KeyA'))-Number(keys.has('KeyD'));if(throttle>0)speed=Math.min(11,speed+8*dt);else if(throttle<0)speed=Math.max(-4.5,speed-9*dt);else speed=Math.abs(speed)<.08?0:speed-Math.sign(speed)*Math.min(Math.abs(speed),3.2*dt);
  const grip=Math.min(1,Math.abs(speed)/2.2),heading=car.rotation.y+steer*1.7*grip*dt*Math.sign(speed||1),next=car.position.clone();move(next,Math.sin(heading)*speed*dt,Math.cos(heading)*speed*dt,1.15,2.15);
