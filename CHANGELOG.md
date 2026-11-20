@@ -8,6 +8,14 @@
 
 # Change log
 
+## 2026-11-19 — Safer vehicle exits
+
+- Vehicle exit now checks four positions around the car (left/right and front/rear) against building collision bounds before moving the camera.
+- If every exit position is blocked, the player stays in the car and receives a clear message rather than being placed inside a building.
+- Exiting restores first-person camera position and the car's heading.
+
+**Verification:** exit-position logic reviewed and source-level scenario checks run; no local npm build or browser gameplay test was possible because this environment cannot resolve GitHub. CI for this commit is not yet confirmed.
+
 ## 2026-11-05 — Build repair
 
 - Fixed the texture registry type to match the current Vlox API (`TextureData[]`).
