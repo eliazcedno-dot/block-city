@@ -55,7 +55,25 @@ const collides=(x:number,z:number,rx:number,rz:number)=>bounds.some(b=>x+rx>b.mi
 function move(p:Vector3,dx:number,dz:number,rx:number,rz:number){if(!collides(p.x+dx,p.z,rx,rz))p.x+=dx;if(!collides(p.x,p.z+dz,rx,rz))p.z+=dz}
 function mission(){if(!done){done=true;objective.textContent='MISSION COMPLETE — FIRST CONTACT';marker.dispose();notify('CONTACT: Reward $250 — take the red car for a drive.')}else notify('CONTACT: The garage is down the block.')}
 function interact(){if(inCar)return;const hit=scene.pickWithRay(camera.getForwardRay(6),(m:AbstractMesh)=>m.metadata?.kind==='contact');if(hit?.hit)mission();else notify('Aim at the gold contact within 6 blocks and press E.')}
-function toggleCar(){if(inCar){inCar=false;speed=0;camera.position.copyFrom(car.position.add(new Vector3(Math.cos(yaw),0,-Math.sin(yaw)).scale(2.4)));camera.position.y=62.65;yaw=car.rotation.y;camera.rotation.set(pitch,yaw,0);notify('Exited vehicle')}else if(Vector3.Distance(camera.position,car.position)<=4.5){inCar=true;speed=0;notify('Vehicle entered — WASD drive · F exit')}else notify('Move closer to the red car to enter it.')}
+function toggleCar(){
+ if(inCar){
+  const heading=car.rotation.y;
+  const right=new Vector3(Math.cos(heading),0,-Math.sin(heading));
+  const forward=new Vector3(Math.sin(heading),0,Math.cos(heading));
+  const exits=[
+   car.position.add(right.scale(3)),
+   car.position.subtract(right.scale(3)),
+   car.position.add(forward.scale(3.5)),
+   car.position.subtract(forward.scale(3.5))
+  ];
+  const safeExit=exits.find(p=>!collides(p.x,p.z,.34,.34));
+  if(!safeExit){notify('No safe space to exit. Move the car away from buildings.');return}
+  inCar=false;speed=0;camera.position.copyFrom(safeExit);camera.position.y=62.65;
+  yaw=heading;camera.rotation.set(pitch,yaw,0);notify('Exited vehicle');
+ }else if(Vector3.Distance(camera.position,car.position)<=4.5){
+  inCar=true;speed=0;notify('Vehicle entered — WASD drive · F exit');
+ }else notify('Move closer to the red car to enter it.')
+}
 canvas.addEventListener('click',()=>{if(!document.pointerLockElement)void canvas.requestPointerLock()});
 document.addEventListener('mousemove',e=>{if(!document.pointerLockElement||inCar)return;yaw+=e.movementX*.0022;pitch=Math.max(-1.48,Math.min(1.48,pitch-e.movementY*.0022));camera.rotation.set(pitch,yaw,0)});
 window.addEventListener('keydown',e=>{keys.add(e.code);if(['KeyW','KeyA','KeyS','KeyD','Space'].includes(e.code))e.preventDefault();if(e.code==='KeyE'&&!e.repeat)interact();if(e.code==='KeyF'&&!e.repeat)toggleCar()});
