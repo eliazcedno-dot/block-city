@@ -3,8 +3,8 @@
 ## Live build status
 
 - **Play in browser:** https://eliazcedno-dot.github.io/block-city/
-- The last confirmed successful GitHub Actions Pages run is [run 42140655218](https://github.com/eliazcedno-dot/block-city/actions/runs/42140655218); its install, build, artifact upload, and deployment steps all passed before the latest NPC-picking change.
-- The latest NPC-picking change is now in `main`, but its new Actions result has not yet been verified. Check [Actions](https://github.com/eliazcedno-dot/block-city/actions) before assuming the live page contains it.
+- The last confirmed successful GitHub Actions Pages run is [run 42140655218](https://github.com/eliazcedno-dot/block-city/actions/runs/42140655218); its install, build, artifact upload, and deployment steps all passed before the NPC-picking and vehicle-exit-safety changes.
+- Both newer changes are now in `main`, but their Actions results have not yet been verified. Check [Actions](https://github.com/eliazcedno-dot/block-city/actions) before assuming the live page contains them.
 - The published page has not yet had a manual browser gameplay smoke test. Treat DVE worker/world startup and in-game controls as implemented in the prototype but not yet runtime-verified.
 
 A browser-game starter built around **Divine Voxel Engine (Vlox)** and its Babylon.js renderer.
