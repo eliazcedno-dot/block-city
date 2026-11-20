@@ -28,7 +28,7 @@ Open the local URL printed by Vite. Click the game to capture the mouse; Esc rel
 - **Space** — jump
 - **E** — interact with the contact you're aiming at
 - **Click the contact** — complete the contact mission when close enough
-- **F** — enter or exit the red car when nearby
+- **F** — enter the red car when nearby; exit using the nearest clear side or end (blocked exits are refused)
 
 ## Current milestone
 
