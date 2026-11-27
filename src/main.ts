@@ -3,6 +3,7 @@ import InitDVErenderer from '@divinevoxel/vlox-babylon/Init/Classic/InitDVEBRCla
 import { StartRenderer } from '@divinevoxel/vlox/Init/StartRenderer';
 import type { TextureData } from '@divinevoxel/vlox/Textures/Texture.types';
 import type { VoxelData } from '@divinevoxel/vlox/Voxels';
+import { getVehicleSteeringInput } from './gameplay/vehicle-controls.js';
 import './style.css';
 
 const canvas=document.querySelector<HTMLCanvasElement>('#game')!;
@@ -80,7 +81,7 @@ window.addEventListener('keydown',e=>{keys.add(e.code);if(['KeyW','KeyA','KeyS',
 window.addEventListener('keyup',e=>keys.delete(e.code));window.addEventListener('blur',()=>keys.clear());
 scene.onPointerObservable.add((i:any)=>{const m=i.pickInfo?.pickedMesh as AbstractMesh|null;if(!inCar&&i.type===PointerEventTypes.POINTERDOWN&&i.pickInfo?.hit&&m?.metadata?.kind==='contact'&&(i.pickInfo.distance??99)<=6)mission()});
 scene.onBeforeRenderObservable.add(()=>{const dt=Math.min(engine.getDeltaTime()/1000,.05),f=Number(keys.has('KeyW'))-Number(keys.has('KeyS')),s=Number(keys.has('KeyD'))-Number(keys.has('KeyA'));
- if(inCar){const throttle=f,steer=Number(keys.has('KeyA'))-Number(keys.has('KeyD'));if(throttle>0)speed=Math.min(11,speed+8*dt);else if(throttle<0)speed=Math.max(-4.5,speed-9*dt);else speed=Math.abs(speed)<.08?0:speed-Math.sign(speed)*Math.min(Math.abs(speed),3.2*dt);
+ if(inCar){const throttle=f,steer=getVehicleSteeringInput(keys);if(throttle>0)speed=Math.min(11,speed+8*dt);else if(throttle<0)speed=Math.max(-4.5,speed-9*dt);else speed=Math.abs(speed)<.08?0:speed-Math.sign(speed)*Math.min(Math.abs(speed),3.2*dt);
  const grip=Math.min(1,Math.abs(speed)/2.2),heading=car.rotation.y+steer*1.7*grip*dt*Math.sign(speed||1),next=car.position.clone();move(next,Math.sin(heading)*speed*dt,Math.cos(heading)*speed*dt,1.15,2.15);
  if(next.x!==car.position.x||next.z!==car.position.z){car.position.x=next.x;car.position.z=next.z;car.rotation.y=heading}else speed*= -.12;
  camera.position.copyFrom(car.position.add(new Vector3(-Math.sin(car.rotation.y)*5.2,2.7,-Math.cos(car.rotation.y)*5.2)));camera.setTarget(car.position.add(new Vector3(0,.8,0)));yaw=car.rotation.y;

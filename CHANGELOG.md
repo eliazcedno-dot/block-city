@@ -1,3 +1,11 @@
+## 2026-11-26 — Correct arcade steering controls
+
+- Fixed the vehicle's reversed A/D steering: A now turns left and D turns right when driving forward, with reverse motion retaining the expected steering response.
+- Extracted keyboard-to-steering conversion into a small dependency-free gameplay helper.
+- Added four Node.js regression tests and made GitHub Actions run them before the TypeScript/Vite build.
+
+**Verification:** the four steering regression tests passed locally with Node.js. The GitHub Actions build/deploy triggered by this commit still needs to complete; no browser gameplay test was run in this environment.
+
 ## 2026-11-12 — Reliable NPC picking
 
 - Changed the contact hitbox from `isVisible = false` (excluded by Babylon's normal scene picking) to `visibility = 0` with `isVisible = true` and `isPickable = true`, so it stays invisible while remaining clickable.
